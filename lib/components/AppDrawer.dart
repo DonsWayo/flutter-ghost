@@ -8,22 +8,27 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          _createHeader(),
+          SizedBox(height: 22),
           _createDrawerItem(
-              icon: Icons.contacts,
-              text: 'Contacts',
+              icon: Icons.home,
+              text: 'Home',
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Routes.home)),
+          _createDrawerItem(
+              icon: Icons.contacts,
+              text: 'Users',
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, Routes.users)),
           _createDrawerItem(
               icon: Icons.note,
               text: 'Posts',
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Routes.posts)),
           _createDrawerItem(
-              icon: Icons.note,
-              text: 'Notes',
+              icon: Icons.local_offer,
+              text: 'Tags',
               onTap: () =>
-                  Navigator.pushReplacementNamed(context, Routes.home)),
+                  Navigator.pushReplacementNamed(context, Routes.tags)),
           Divider(),
           _createDrawerItem(icon: Icons.bug_report, text: 'Report an issue'),
           ListTile(

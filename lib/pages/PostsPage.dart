@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ghost_admin/components/AppDrawer.dart';
+import 'package:ghost_admin/components/CircleWidget.dart';
 import 'package:ghost_admin/core/Api.dart';
 import 'package:ghost_admin/core/models.dart';
+
+import '../core/models.dart';
+import 'EditorPage.dart';
 
 class PostsPage extends StatefulWidget {
   static const String routeName = '/posts';
@@ -13,23 +17,24 @@ class PostsPage extends StatefulWidget {
 
 class _PostsPageState extends State<PostsPage> {
   bool _isLoading = true;
-  var posts = new Posts();
+  var posts = Posts();
 
   getPosts() async {
-    Map<String, String> headers = {'Origin': 'https://deviffy.com'};
-    Api.getAllRequest('posts/?source=html&formats=html', headers).then((response) async {
+    Api.getAllRequest('posts/?source=html&formats=html')
+        .then((response) async {
       //if (response) {
-        setState(() {
-          _isLoading = false;
-          posts = postsFromJson(response);
-        });
-   //   } else {
-    //    setState(() {
-   //       _isLoading = false;
-   //     });
-        //_showDialog();
-        //print(response.body);
-    //  }
+      print(response);
+      setState(() {
+        _isLoading = false;
+        posts = postsFromJson(response);
+      });
+      //   } else {
+      //    setState(() {
+      //       _isLoading = false;
+      //     });
+      //_showDialog();
+      //print(response.body);
+      //  }
     });
   }
 
@@ -49,19 +54,51 @@ class _PostsPageState extends State<PostsPage> {
             onPressed: () {
               Navigator.pushNamed(context, '/editor');
             },
-            child: Icon(Icons.navigation)));
+            child: Icon(Icons.add)));
   }
+  
 
   _getBody() {
-    if(posts != null && posts.posts.length != null) {
+    if (posts != null && posts.posts != null) {
       return ListView.builder(
-          itemCount: posts.posts.length,
-          itemBuilder: (context, index) {
-            return ListTile(title: Text(posts.posts[index].title));
-          },
-        );
+        itemCount: posts.posts.length,
+        itemBuilder: (context, index) {
+          Post _model = posts.posts[index];
+          return ListTile(
+            leading: CircleAvatar(
+              radius: 24.0,
+              backgroundImage: NetworkImage(_model.authors[0].profileImage),
+            ),
+            title: Row(
+              children: <Widget>[
+                Text(_model.title),
+                SizedBox(
+                  width: 16.0,
+                ),
+                Text(
+                  _model.status,
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ],
+            ),
+            subtitle: Text(_model.slug),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 14.0,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditorPage(post: posts.posts[index]),
+                ),
+              );
+            },
+          );
+        },
+      );
     } else {
-      return Container();
+      return Center(child: CircularProgressIndicator());
     }
   }
 }

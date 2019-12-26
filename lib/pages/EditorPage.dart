@@ -5,18 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:ghost_admin/core/Api.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
+import 'package:html2md/html2md.dart' as html2md;
+
+import '../core/models.dart';
 
 enum WhyFarther { draft, publish }
 enum ConfirmAction { CANCEL, ACCEPT }
 
 class EditorPage extends StatefulWidget {
   static const String routeName = '/editor';
+  final Post post;
+
+  EditorPage({Key key, this.post}) : super(key: key);
 
   @override
-  EditorPageState createState() => EditorPageState();
+  EditorPageState createState() => EditorPageState(post);
 }
 
 class EditorPageState extends State<EditorPage> {
+  Post post;
+  EditorPageState(this.post);
+
   /// Allows to control the editor and the document.
   ZefyrController _controller;
   var _selection;
@@ -51,8 +60,8 @@ class EditorPageState extends State<EditorPage> {
                 print(result);
                 switch (result) {
                   case WhyFarther.publish:
-                   // _savedType = "published";
-                     _savedType = "draft";
+                    // _savedType = "published";
+                    _savedType = "draft";
                     _showPublishDialog();
                     break;
                   case WhyFarther.draft:
@@ -85,12 +94,23 @@ class EditorPageState extends State<EditorPage> {
     );
   }
 
+  convertHtml2md() {
+    var html = this.post.html;
+    return html2md.convert(html);
+  }
+
   /// Loads the document to be edited in Zefyr.
   NotusDocument _loadDocument() {
     // For simplicity we hardcode a simple document with one line of text
     // saying "Zefyr Quick Start".
     // (Note that delta must always end with newline.)
-    final Delta delta = Delta()..insert("Zefyr Quick Start\n");
+    //  final Delta delta = Delta()..insert("Zefyr Quick Start\n");
+    Delta delta;
+    if (this.post != null) {
+      delta = Delta()..insert(convertHtml2md() + '\n');
+    } else {
+      delta = Delta()..insert("Writte your post...\n");
+    }
     return NotusDocument.fromDelta(delta);
   }
 
@@ -106,20 +126,11 @@ class EditorPageState extends State<EditorPage> {
   makePost() {
     Map<dynamic, dynamic> body = {
       "posts": [
-        {
-          "title": _postName,
-          "html": _postContent,
-          "status": _savedType
-        }
+        {"title": _postName, "html": _postContent, "status": _savedType}
       ]
     };
 
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Origin': 'https://deviffy.com'
-    };
-
-    Api.postAllRequest('posts/?source=html', headers, body)
+    Api.postAllRequest('posts/?source=html', body)
         .then((response) async {
       print(response);
     });

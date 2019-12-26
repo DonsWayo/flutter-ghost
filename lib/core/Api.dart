@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const baseUrl = "https://deviffy.com/ghost/api/v3/admin/";
 
@@ -35,7 +36,8 @@ class Api {
     });
   }
 
-  static postAllRequest(String url, headers, body) async {
+  static postAllRequest(String url, body) async {
+    Map<String, String> headers = {'Origin': 'https://deviffy.com'};
     try {
       var response = await Requests.post(baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
@@ -46,17 +48,41 @@ class Api {
     }
   }
 
-  static postLoginRequest(String url, headers, body) async {
+  static postPostRequest(String url, body) async {
+    var domain = await getOrigin();
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Origin':  domain
+      };
     try {
       var response = await Requests.post(baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
+      print(response.content());
+      return response;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static postLoginRequest(String url, headers, body, website) async {
+    try {
+      var response = await Requests.post(baseUrl + url,
+          headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
+      if (response.success) {
+        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences.setString('HeaderKey', website);
+        sharedPreferences.setBool('remember', true);
+      }
       return response.success;
     } catch (e) {
       print(e);
     }
   }
 
-  static getAllRequest(String url, headers) async {
+  static getAllRequest(String url) async {
+    var domain = await getOrigin();
+    Map<String, String> headers = {'Origin': domain};
     try {
       var response = await Requests.get(baseUrl + url, headers: headers);
       print(response);
@@ -65,6 +91,17 @@ class Api {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  
+
+  static getOrigin() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.containsKey('HeaderKey')) {
+      return sharedPreferences.getString('HeaderKey');
+    } else {
+      return null;
     }
   }
 }

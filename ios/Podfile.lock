@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_native_web (0.0.1):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -17,6 +19,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_native_web (from `.symlinks/plugins/flutter_native_web/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
@@ -28,6 +31,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_native_web:
+    :path: ".symlinks/plugins/flutter_native_web/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
@@ -45,6 +50,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_native_web: 50594dd3390e9fcbc95156af7c9718df60b462cc
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087

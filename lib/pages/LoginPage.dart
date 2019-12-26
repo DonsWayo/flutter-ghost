@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:ghost_admin/core/Api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomePage.dart';
 
 class LoginPage extends StatefulWidget {
-    static const String routeName = '/login';
+  static const String routeName = '/login';
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -38,37 +39,30 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  login(String email, pass) async {
-    Map<String, String> body = {
-      'username': email,
-      'password': pass
-    };
+  login(String email, pass, website) async {
 
-    Map<String, String> headers = {
-      'Origin': 'https://deviffy.com'
-    };
+    var web = 'https://' + website;
 
-    Api.postLoginRequest('session',headers, body).then((response) async {
+    Map<String, String> body = {'username': email, 'password': pass};
+
+    Map<String, String> headers = {'Origin': web};
+
+    Api.postLoginRequest('session', headers, body, web).then((response) async {
       if (response) {
         setState(() {
           _isLoading = false;
         });
-       // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-        //sharedPreferences.setString("token", jsonResponse['data.token.access_token']);
-       // sharedPreferences.setString("email", email);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => HomePage()),
             (Route<dynamic> route) => false);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        _showDialog();
+        print(response.body);
       }
-     else {
-      setState(() {
-        _isLoading = false;
-      });
-      _showDialog();
-      print(response.body);
-    }
     });
-   
   }
 
   _showDialog() {
@@ -105,17 +99,17 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             _isLoading = true;
           });
-          login(emailController.text, passwordController.text);
+          login(emailController.text, passwordController.text, websiteController.text);
         },
         elevation: 0.0,
-        color: Colors.amber,
+        color: Colors.green,
         child: Text("Sign In"),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
 
-
+  final TextEditingController websiteController = new TextEditingController();
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
@@ -125,10 +119,18 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: <Widget>[
           TextFormField(
+            controller: websiteController,
+            decoration: InputDecoration(
+                icon: Icon(Icons.web_asset),
+                hintText: "Website",
+                labelText: "deviffy.com, medium.com..."),
+          ),
+          SizedBox(height: 30.0),
+          TextFormField(
             controller: emailController,
             decoration: InputDecoration(
               icon: Icon(Icons.email),
-              hintText: "Email",
+              hintText: "Admin Email",
             ),
           ),
           SizedBox(height: 30.0),
@@ -145,10 +147,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 50.0),
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Login",
-          style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
-    );
+        margin: EdgeInsets.only(top: 50.0),
+        padding: EdgeInsets.all(30),
+        child: SvgPicture.asset("assets/logo.svg"));
   }
 }

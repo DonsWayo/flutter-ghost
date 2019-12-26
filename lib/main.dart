@@ -3,6 +3,9 @@ import 'package:ghost_admin/pages/EditorPage.dart';
 import 'package:ghost_admin/pages/HomePage.dart';
 import 'package:ghost_admin/pages/LoginPage.dart';
 import 'package:ghost_admin/pages/PostsPage.dart';
+import 'package:ghost_admin/pages/ProfilePage.dart';
+import 'package:ghost_admin/pages/TagsPage.dart';
+import 'package:ghost_admin/pages/UsersPage.dart';
 
 import 'Routes.dart';
 
@@ -32,7 +35,10 @@ class MyApp extends StatelessWidget {
         Routes.home: (context) => HomePage(),
         Routes.posts: (context) => PostsPage(),
         Routes.login: (context) => LoginPage(),
-        Routes.editor: (context) => EditorPage()
+        Routes.editor: (context) => EditorPage(),
+        Routes.users: (context) => UsersPage(),
+        Routes.tags: (context) => TagsPage(),
+        Routes.profile: (context) => ProfilePage(author: null,)
       }
     );
   }
