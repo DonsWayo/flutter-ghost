@@ -25,7 +25,9 @@ class _LoginPageState extends State<LoginPage> {
             Brightness.dark // Dark == white status bar -- for IOS.
         ));
     return Scaffold(
-      body: Container(
+      body: Center(
+        child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
@@ -36,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
       ),
+      )
     );
   }
 

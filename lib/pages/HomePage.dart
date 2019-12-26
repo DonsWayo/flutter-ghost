@@ -20,8 +20,12 @@ class _HomePageState extends State<HomePage> {
   String loadUrl;
 
   @override
-  void initState() async { 
+  void initState() { 
     super.initState();
+    _init();
+  }
+
+  _init() async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.containsKey('HeaderKey')) {
       loadUrl = sharedPreferences.getString('HeaderKey');
