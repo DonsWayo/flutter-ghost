@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ghost_admin/pages/WebViewPage.dart';
 import 'package:markdown/markdown.dart' as Mark;
 import 'package:notus/convert.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class EditorPageState extends State<EditorPage> {
   var _postName;
   var _postContent;
   var _savedType;
+  var _postTitle = 'New Post';
 
   /// Zefyr editor like any other input field requires a focus node.
   FocusNode _focusNode;
@@ -39,6 +41,9 @@ class EditorPageState extends State<EditorPage> {
   @override
   void initState() {
     super.initState();
+    if (this.post != null && this.post.title != null) {
+      _postTitle = this.post.title;
+    }
     // Here we must load the document and pass it to Zefyr controller.
     final document = _loadDocument();
     _controller = ZefyrController(document);
@@ -51,8 +56,16 @@ class EditorPageState extends State<EditorPage> {
     // one of its parents.
     return Scaffold(
       appBar: AppBar(
-        title: Text("Editor page"),
+        title: Text(_postTitle),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.remove_red_eye),
+            tooltip: 'Show preview',
+            onPressed: () {
+              _savedType = "draft";
+              showWebView();
+            },
+          ),
           PopupMenuButton<WhyFarther>(
             onSelected: (WhyFarther result) {
               setState(() {
@@ -62,7 +75,7 @@ class EditorPageState extends State<EditorPage> {
                   case WhyFarther.publish:
                     // _savedType = "published";
                     _savedType = "draft";
-                    _showPublishDialog();
+                    prepareForSave();
                     break;
                   case WhyFarther.draft:
                     _savedType = "draft";
@@ -99,6 +112,14 @@ class EditorPageState extends State<EditorPage> {
     return html2md.convert(html);
   }
 
+  prepareForSave() {
+    if (this.post != null && this.post.title != null ) {
+      _saveNotes();
+    } else {
+      _showPublishDialog();
+    }
+  }
+
   /// Loads the document to be edited in Zefyr.
   NotusDocument _loadDocument() {
     // For simplicity we hardcode a simple document with one line of text
@@ -126,7 +147,7 @@ class EditorPageState extends State<EditorPage> {
   makePost() {
     Map<dynamic, dynamic> body = {
       "posts": [
-        {"title": _postName, "html": _postContent, "status": _savedType}
+        {"title": this.post.title, "html": _postContent, "status": _savedType}
       ]
     };
 
@@ -134,6 +155,17 @@ class EditorPageState extends State<EditorPage> {
         .then((response) async {
       print(response);
     });
+  }
+
+  showWebView() {
+     if (this.post != null && this.post.title != null) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => WebViewPage(
+              title: this.post.title,
+              selectedUrl: this.post.url,
+            )));
+    }
+    
   }
 
   _showPublishDialog() {

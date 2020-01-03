@@ -1,7 +1,9 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:ghost_admin/pages/EditorPage.dart';
 import 'package:ghost_admin/pages/HomePage.dart';
 import 'package:ghost_admin/pages/LoginPage.dart';
+import 'package:ghost_admin/pages/NewTagPage.dart';
 import 'package:ghost_admin/pages/PostsPage.dart';
 import 'package:ghost_admin/pages/ProfilePage.dart';
 import 'package:ghost_admin/pages/TagsPage.dart';
@@ -12,11 +14,11 @@ import 'Routes.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  //FirebaseAnalytics analytics = FirebaseAnalytics();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Ghost CMS',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
         Routes.editor: (context) => EditorPage(),
         Routes.users: (context) => UsersPage(),
         Routes.tags: (context) => TagsPage(),
+        Routes.newTag: (context) => NewTagPage(),
         Routes.profile: (context) => ProfilePage(author: null,)
       }
     );

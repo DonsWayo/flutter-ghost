@@ -53,10 +53,27 @@ class Api {
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'Origin':  domain
-      };
+      'Origin': domain
+    };
     try {
       var response = await Requests.post(baseUrl + url,
+          headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
+      print(response.content());
+      return response;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static uploadImage(body) async {
+    var domain = await getOrigin();
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Origin': domain
+    };
+    try {
+      var response = await Requests.post(baseUrl + 'admin/images/upload',
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       print(response.content());
       return response;
@@ -70,7 +87,8 @@ class Api {
       var response = await Requests.post(baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       if (response.success) {
-        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        SharedPreferences sharedPreferences =
+            await SharedPreferences.getInstance();
         sharedPreferences.setString('HeaderKey', website);
         sharedPreferences.setBool('remember', true);
       }
@@ -93,8 +111,6 @@ class Api {
       print(e);
     }
   }
-
-  
 
   static getOrigin() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
 
   login(String email, pass, website) async {
 
-    var web = 'https://' + website;
+    var web = website;
 
     Map<String, String> body = {'username': email, 'password': pass};
 
@@ -55,9 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-            (Route<dynamic> route) => false);
+        navigateToHome();
       } else {
         setState(() {
           _isLoading = false;
@@ -68,6 +66,30 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  navigateToHome() {
+    Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+            (Route<dynamic> route) => false);
+  }
+
+
+  getRemember() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.containsKey('remember')) {
+      navigateToHome();
+    } 
+  }
+
+   @override
+  void initState() {
+    super.initState();
+    getRemember();
+  }
+
+  dispose() {
+    super.dispose();
+  }
+
   _showDialog() {
     // flutter defined function
     showDialog(
@@ -75,8 +97,8 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Error Login"),
-          content: new Text("Revisa los campos"),
+          title: new Text("Error"),
+          content: new Text("Something is wrong"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -112,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  final TextEditingController websiteController = new TextEditingController();
+  final TextEditingController websiteController = new TextEditingController(text: 'https://');
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
@@ -126,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
             decoration: InputDecoration(
                 icon: Icon(Icons.web_asset),
                 hintText: "Website",
-                labelText: "deviffy.com, medium.com..."),
+                ),
           ),
           SizedBox(height: 30.0),
           TextFormField(

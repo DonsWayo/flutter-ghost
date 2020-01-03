@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ghost_admin/pages/NewTagPage.dart';
 
 import '../components/AppDrawer.dart';
 import '../core/Api.dart';
 import '../core/models.dart';
-import '../core/models.dart';
-import '../core/models.dart';
+
 
 class TagsPage extends StatefulWidget {
   static const String routeName = '/tags';
@@ -49,8 +50,12 @@ class _TagsPageState extends State<TagsPage> {
         drawer: AppDrawer(),
         body: _getBody(),
         floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              //Navigator.pushNamed(context, '/editor');
+            onPressed: () async {
+             await Navigator.of(context).push(CupertinoPageRoute(
+              fullscreenDialog: true, builder: (context) => NewTagPage()));
+              setState(() {
+                getTags();
+              });
             },
             child: Icon(Icons.add))
     );
@@ -77,12 +82,12 @@ class _TagsPageState extends State<TagsPage> {
               size: 14.0,
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
+             // Navigator.push(
+              //  context,
+              //  MaterialPageRoute(
                  // builder: (context) => ProfilePage(author: users.users[index]),
-                ),
-              );
+             //   ),
+              //);
             },
           );
         },

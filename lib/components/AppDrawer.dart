@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ghost_admin/Routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -29,6 +30,10 @@ class AppDrawer extends StatelessWidget {
               text: 'Tags',
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Routes.tags)),
+          _createDrawerItem(
+              icon: Icons.remove_circle_outline,
+              text: 'Log Out',
+              onTap: () =>  removeData(context)),
           Divider(),
           _createDrawerItem(icon: Icons.bug_report, text: 'Report an issue'),
           ListTile(
@@ -38,6 +43,12 @@ class AppDrawer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  removeData(context) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+    Navigator.pushReplacementNamed(context, Routes.login);
   }
 
   Widget _createHeader() {
