@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ghost_admin/core/Api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'HomePage.dart';
 
@@ -16,6 +18,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
+
+  final storage = new FlutterSecureStorage();
+  final TextEditingController websiteController = new TextEditingController(text: 'https://');
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +91,35 @@ class _LoginPageState extends State<LoginPage> {
    @override
   void initState() {
     super.initState();
+    initUser();
     getRemember();
   }
 
   dispose() {
     super.dispose();
+  }
+
+  initUser() async {
+    Map<String, String> allValues = await storage.readAll();
+    if (allValues.isNotEmpty) {
+      print(allValues);
+    }
+
+    _signInAnonymously();
+  }
+
+  Future<void> _signInAnonymously() async {
+    try {
+      await FirebaseAuth.instance.signInAnonymously();
+    } catch (e) {
+      print(e); // TODO: show dialog with error
+    }
+  }
+
+  saveUser() {
+    storage.write(key: "domain", value: websiteController.text);
+    storage.write(key: "email", value: emailController.text);
+    storage.write(key: "password", value: passwordController.text);
   }
 
   _showDialog() {
@@ -101,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
           content: new Text("Something is wrong"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new FlatButton(
+            FlatButton(
               child: new Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -127,16 +159,14 @@ class _LoginPageState extends State<LoginPage> {
           login(emailController.text, passwordController.text, websiteController.text);
         },
         elevation: 0.0,
-        color: Colors.green,
+        color: Colors.teal,
         child: Text("Sign In"),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
 
-  final TextEditingController websiteController = new TextEditingController(text: 'https://');
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
+  
 
   Container textSection() {
     return Container(

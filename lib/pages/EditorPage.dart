@@ -74,11 +74,12 @@ class EditorPageState extends State<EditorPage> {
                 switch (result) {
                   case WhyFarther.publish:
                     // _savedType = "published";
-                    _savedType = "draft";
+                    _savedType = "published";
                     prepareForSave();
                     break;
                   case WhyFarther.draft:
                     _savedType = "draft";
+                    prepareForSave();
                     break;
                   default:
                 }
@@ -140,7 +141,12 @@ class EditorPageState extends State<EditorPage> {
     String html = Mark.markdownToHtml(notusMarkdown.encode(_delta).toString());
     _postContent = html;
     print(html);
-    makePost();
+    
+    if (post.id != null) {
+      makePost();
+    } else {
+      updatePost();
+    }
     // save the markdown string
   }
 
@@ -150,8 +156,23 @@ class EditorPageState extends State<EditorPage> {
         {"title": this.post.title, "html": _postContent, "status": _savedType}
       ]
     };
+    print(post);
 
     Api.postAllRequest('posts/?source=html', body)
+        .then((response) async {
+      print(response);
+    });
+  }
+
+  updatePost() {
+    Map<dynamic, dynamic> body = {
+      "posts": [
+        {"title": this.post.title, "html": _postContent, "status": _savedType, "updated_at": DateTime.now().toIso8601String()}
+      ]
+    };
+    print(post);
+
+    Api.postAllRequest('posts/' + post.id +'/?source=html', body)
         .then((response) async {
       print(response);
     });
@@ -164,6 +185,8 @@ class EditorPageState extends State<EditorPage> {
               title: this.post.title,
               selectedUrl: this.post.url,
             )));
+    } else {
+      _showPublishDialog();
     }
     
   }
@@ -175,7 +198,7 @@ class EditorPageState extends State<EditorPage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Text("Publish"),
+          title: Text("Save Post"),
           content: new Row(
             children: <Widget>[
               new Expanded(
@@ -198,7 +221,7 @@ class EditorPageState extends State<EditorPage> {
               },
             ),
             FlatButton(
-              child: Text("Publish"),
+              child: Text("Save"),
               onPressed: () {
                 Navigator.of(context).pop();
                 _saveNotes();

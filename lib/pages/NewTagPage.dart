@@ -92,7 +92,7 @@ class _NewTagPageState extends State<NewTagPage> {
           });
         },
         elevation: 0.0,
-        color: Colors.green,
+        color: Colors.teal,
         child: Text("Save"),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),

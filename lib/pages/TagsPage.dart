@@ -77,7 +77,7 @@ class _TagsPageState extends State<TagsPage> {
               ],
             ),
             subtitle: Text(_model.slug),
-            trailing: Icon(
+           /*  trailing: Icon(
               Icons.arrow_forward_ios,
               size: 14.0,
             ),
@@ -88,7 +88,7 @@ class _TagsPageState extends State<TagsPage> {
                  // builder: (context) => ProfilePage(author: users.users[index]),
              //   ),
               //);
-            },
+            }, */
           );
         },
       );

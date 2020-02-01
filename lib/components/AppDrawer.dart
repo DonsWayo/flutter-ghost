@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ghost_admin/Routes.dart';
+import 'package:ghost_admin/pages/SubmitBugPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -9,22 +10,22 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          SizedBox(height: 22),
+          SizedBox(height: 52),
           _createDrawerItem(
               icon: Icons.home,
               text: 'Home',
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Routes.home)),
           _createDrawerItem(
-              icon: Icons.contacts,
-              text: 'Users',
-              onTap: () =>
-                  Navigator.pushReplacementNamed(context, Routes.users)),
-          _createDrawerItem(
               icon: Icons.note,
               text: 'Posts',
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Routes.posts)),
+          _createDrawerItem(
+              icon: Icons.contacts,
+              text: 'Users',
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, Routes.users)),
           _createDrawerItem(
               icon: Icons.local_offer,
               text: 'Tags',
@@ -33,13 +34,19 @@ class AppDrawer extends StatelessWidget {
           _createDrawerItem(
               icon: Icons.remove_circle_outline,
               text: 'Log Out',
-              onTap: () =>  removeData(context)),
+              onTap: () => removeData(context)),
           Divider(),
-          _createDrawerItem(icon: Icons.bug_report, text: 'Report an issue'),
-          ListTile(
-            title: Text('0.0.1'),
-            onTap: () {},
-          ),
+          _createDrawerItem(
+              icon: Icons.bug_report,
+              text: 'Report an issue',
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<Null>(
+                    builder: (BuildContext context) {
+                      return SubmitBugPage();
+                    },
+                    fullscreenDialog: true,
+                  ))),
         ],
       ),
     );
