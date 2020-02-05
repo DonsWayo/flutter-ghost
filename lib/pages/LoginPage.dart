@@ -204,6 +204,6 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
         margin: EdgeInsets.only(top: 25.0),
         padding: EdgeInsets.all(0),
-        child: Image.asset('assets/logo.png') ,height: 200,);
+        child: Image.asset('assets/ghost-logo.png') ,height: 200,);
   }
 }
