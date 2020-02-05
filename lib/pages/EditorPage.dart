@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ghost_admin/pages/WebViewPage.dart';
+import 'package:intl/intl.dart';
 import 'package:markdown/markdown.dart' as Mark;
 import 'package:notus/convert.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,7 @@ class EditorPageState extends State<EditorPage> {
   }
 
   prepareForSave() {
-    if (this.post != null && this.post.title != null ) {
+    if (this.post != null && this.post.title != null) {
       _saveNotes();
     } else {
       _showPublishDialog();
@@ -141,11 +142,11 @@ class EditorPageState extends State<EditorPage> {
     String html = Mark.markdownToHtml(notusMarkdown.encode(_delta).toString());
     _postContent = html;
     print(html);
-    
+
     if (post.id != null) {
-      makePost();
-    } else {
       updatePost();
+    } else {
+      makePost();
     }
     // save the markdown string
   }
@@ -158,37 +159,48 @@ class EditorPageState extends State<EditorPage> {
     };
     print(post);
 
-    Api.postAllRequest('posts/?source=html', body)
-        .then((response) async {
+    Api.postAllRequest('posts/?source=html', body).then((response) async {
       print(response);
     });
   }
 
   updatePost() {
+    var date;
+    if (post.updatedAt == null) {
+      var now = new DateTime.now();
+      var dateFormatted = DateFormat('yyyy-MM-ddTHH:mm').format(now);
+      date = dateFormatted + ':00.000Z';
+    } else {
+      date = post.updatedAt.toIso8601String();
+    }
     Map<dynamic, dynamic> body = {
       "posts": [
-        {"title": this.post.title, "html": _postContent, "status": _savedType, "updated_at": DateTime.now().toIso8601String()}
+        {
+          "title": post.title,
+          "html": _postContent,
+          "status": _savedType,
+          "updated_at": date
+        }
       ]
     };
-    print(post);
+   
 
-    Api.postAllRequest('posts/' + post.id +'/?source=html', body)
+    Api.putAllRequest('posts/' + post.id + '/?source=html', body)
         .then((response) async {
       print(response);
     });
   }
 
   showWebView() {
-     if (this.post != null && this.post.title != null) {
+    if (this.post != null && this.post.title != null) {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => WebViewPage(
-              title: this.post.title,
-              selectedUrl: this.post.url,
-            )));
+          builder: (BuildContext context) => WebViewPage(
+                title: this.post.title,
+                selectedUrl: this.post.url,
+              )));
     } else {
       _showPublishDialog();
     }
-    
   }
 
   _showPublishDialog() {

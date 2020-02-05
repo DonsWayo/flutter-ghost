@@ -69,12 +69,13 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         _showDialog();
-        print(response.body);
+        //print(response.body);
       }
     });
   }
 
   navigateToHome() {
+    saveUser();
     Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => HomePage()),
             (Route<dynamic> route) => false);
@@ -116,8 +117,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  saveUser() {
-    storage.write(key: "domain", value: websiteController.text);
+  saveUser() async {
     storage.write(key: "email", value: emailController.text);
     storage.write(key: "password", value: passwordController.text);
   }
@@ -202,8 +202,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
-        margin: EdgeInsets.only(top: 50.0),
-        padding: EdgeInsets.all(30),
-        child: SvgPicture.asset("assets/logo.svg"));
+        margin: EdgeInsets.only(top: 25.0),
+        padding: EdgeInsets.all(0),
+        child: Image.asset('assets/logo.png') ,height: 200,);
   }
 }

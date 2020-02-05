@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const baseUrl = "https://deviffy.com/ghost/api/v3/admin/";
+const baseUrl = "/ghost/api/v3/admin/";
 
 class Api {
   static Future<dynamic> getRequest(String url, Map headers) {
@@ -37,9 +37,31 @@ class Api {
   }
 
   static postAllRequest(String url, body) async {
-    Map<String, String> headers = {'Origin': 'https://deviffy.com'};
+    var domain = await getOrigin();
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Origin': domain
+    };
     try {
-      var response = await Requests.post(baseUrl + url,
+      var response = await Requests.post(domain + baseUrl + url,
+          headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
+      print(response.content());
+      return response;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static putAllRequest(String url, body) async {
+    var domain = await getOrigin();
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Origin': domain
+    };
+    try {
+      var response = await Requests.put(domain + baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       print(response.content());
       return response;
@@ -56,7 +78,7 @@ class Api {
       'Origin': domain
     };
     try {
-      var response = await Requests.post(baseUrl + url,
+      var response = await Requests.post(domain + baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       print(response.content());
       return response;
@@ -73,7 +95,7 @@ class Api {
       'Origin': domain
     };
     try {
-      var response = await Requests.post(baseUrl + 'admin/images/upload',
+      var response = await Requests.post(domain  + baseUrl + 'admin/images/upload',
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       print(response.content());
       return response;
@@ -83,8 +105,9 @@ class Api {
   }
 
   static postLoginRequest(String url, headers, body, website) async {
+      var domain = await getOrigin();
     try {
-      var response = await Requests.post(baseUrl + url,
+      var response = await Requests.post(domain + baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       if (response.success) {
         SharedPreferences sharedPreferences =
@@ -102,7 +125,7 @@ class Api {
     var domain = await getOrigin();
     Map<String, String> headers = {'Origin': domain};
     try {
-      var response = await Requests.get(baseUrl + url, headers: headers);
+      var response = await Requests.get(domain + baseUrl + url, headers: headers);
       print(response);
       if (response.success) {
         return response.content();

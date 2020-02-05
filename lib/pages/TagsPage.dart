@@ -70,13 +70,13 @@ class _TagsPageState extends State<TagsPage> {
           return ListTile(
             title: Row(
               children: <Widget>[
-                Text(_model.name),
+                Text(_model.name.toString()),
                 SizedBox(
                   width: 16.0,
                 ),
               ],
             ),
-            subtitle: Text(_model.slug),
+            subtitle: Text(_model.slug.toString()),
            /*  trailing: Icon(
               Icons.arrow_forward_ios,
               size: 14.0,
