@@ -105,9 +105,8 @@ class Api {
   }
 
   static postLoginRequest(String url, headers, body, website) async {
-      var domain = await getOrigin();
     try {
-      var response = await Requests.post(domain + baseUrl + url,
+      var response = await Requests.post(website + baseUrl + url,
           headers: headers, body: body, bodyEncoding: RequestBodyEncoding.JSON);
       if (response.success) {
         SharedPreferences sharedPreferences =

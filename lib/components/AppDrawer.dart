@@ -32,6 +32,11 @@ class AppDrawer extends StatelessWidget {
               onTap: () =>
                   Navigator.pushReplacementNamed(context, Routes.tags)),
           _createDrawerItem(
+              icon: Icons.local_offer,
+              text: 'Tags',
+              onTap: () =>
+                  Navigator.pushReplacementNamed(context, Routes.settings)),
+          _createDrawerItem(
               icon: Icons.remove_circle_outline,
               text: 'Log Out',
               onTap: () => removeData(context)),
